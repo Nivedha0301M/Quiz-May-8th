@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bank Exam Quiz</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+}
+
+#timer{
+    position:sticky;
+    top:0;
+    background:#222;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+    border-radius:10px;
+    margin-bottom:20px;
+    z-index:100;
+}
+
+.question{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.question h3{
+    margin-bottom:15px;
+}
+
+.option{
+    display:block;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#f0f0f0;
+}
+
+.selected{
+    background:#cfe2ff;
+    border:2px solid #0d6efd;
+}
+
+.mark-btn{
+    margin-top:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#ff9800;
+    color:white;
+}
+
+.marked{
+    background:#ffcc80 !important;
+}
+
+.review-marked{
+    background:#e0e0e0 !important;
+    border:2px solid #9e9e9e;
+}
+
+.clear-btn{
+    margin-top:10px;
+    margin-left:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#dc3545;
+    color:white;
+}
+
+.clear-btn:hover{
+    background:#c82333;
+}
+
+.submit-btn{
+    width:100%;
+    padding:15px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    background:#28a745;
+    color:white;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+.submit-btn:hover{
+    background:#218838;
+}
+
+.result-box{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.review-btn{
+    padding:12px 20px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    background:#007bff;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.review-question{
+    background:white;
+    padding:20px;
+    margin:20px 0;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.correct{
+    color:green;
+    font-weight:bold;
+}
+
+.wrong{
+    color:red;
+    font-weight:bold;
+}
+
+.unanswered{
+    color:orange;
+    font-weight:bold;
+}
+
+.correct-answer{
+    background:#d4edda;
+    padding:10px;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Bank Exam MCQ Quiz</h1>
+
+<div id="timer">Time Left: 15:00</div>
+
+<div id="quiz"></div>
+
+<button class="submit-btn" onclick="submitQuiz()">
+Submit Quiz
+</button>
+
+</div>
+
+<script>
+
+// ===============================
+// QUESTIONS AREA
+// ===============================
+
+const questions = [
+
+
+{q:`The Cabinet Committee on Economic Affairs (CCEA) approved an increase in the Fair and Remunerative Price (FRP) for sugarcane for the 2026–27 sugar season to be effective from October 1, 2026. The revised FRP of Rs.365 per quintal has been fixed at which basic recovery rate?`, options:["9.5%","10%","10.25%","10.5%"], answer:2},
+
+{q:`The revised Fair and Remunerative Price (FRP) for sugarcane approved for the 2026–27 season represents what percentage increase over the FRP fixed for 2025–26?`, options:["2.25%","2.81%","3.10%","3.75%"], answer:1},
+
+{q:`The Mission for Cotton Productivity approved by the Union Cabinet for the period 2026–27 to 2030–31 carries a total financial outlay of:`, options:["Rs.4,250 crore","Rs.5,659.22 crore","Rs.6,120 crore","Rs.7,500 crore"], answer:1},
+
+{q:`The “5F Vision” associated with India’s cotton value chain strategy refers to:`, options:["Farm to Fibre to Factory to Fashion to Foreign","Farm to Fabric to Finance to Freight to Foreign","Fibre to Factory to Fashion to Finance to Foreign","Farm to Fabric to Fashion to Franchise to Foreign"], answer:0},
+
+{q:`India and the European Union (EU) jointly launched a EUR 15.2 million initiative under the Trade and Technology Council (TTC) framework focusing on:`, options:["Green hydrogen production","Semiconductor manufacturing","Electric Vehicle (EV) battery recycling","Rare earth mineral processing"], answer:2},
+
+{q:`The India-European Union Trade and Technology Council (TTC), under which the EV battery recycling initiative was launched, was established in:`, options:["2019","2020","2021","2022"], answer:2},
+
+{q:`The third coordinated call for proposals launched jointly by India and the EU under TTC Working Group 2 has a proposal submission deadline of:`, options:["July 31, 2026","August 15, 2026","September 15, 2026","October 1, 2026"], answer:2},
+
+{q:`India’s first comprehensive Urban Testbed and Aerosol Observatory was established in Chennai by the Indian Institute of Tropical Meteorology (IITM), Pune under which ministry?`, options:["Ministry of Science and Technology","Ministry of Environment, Forest and Climate Change","Ministry of Earth Sciences","Ministry of Housing and Urban Affairs"], answer:2},
+
+{q:`The Urban Testbed and Aerosol Observatory established in Chennai aims to improve all the following except:`, options:["Monsoon prediction","Urban flood prediction","Severe weather nowcasting","Deep-sea mineral exploration"], answer:2},
+
+{q:`The Indian Institute of Tropical Meteorology (IITM), Pune, which established India’s first Urban Testbed and Aerosol Observatory, was founded in:`, options:["1956","1962","1971","1984"], answer:1},
+
+{q:`India and Japan signed agreements in New Delhi to strengthen bilateral cooperation primarily in which two sectors?`, options:["Defence manufacturing and shipping","Artificial Intelligence and agriculture","Quantum technology and health research","Renewable energy and fintech"], answer:2},
+
+{q:`During the India–Japan agreements on quantum cooperation and health research, Japan was represented by which dignitary?`, options:["Fumio Kishida","Kimi, Minister for Science and Technology Policy and Minister of State for Space Policy","Koichi Hagiuda","Yoshimasa Hayashi"], answer:1},
+
+{q:`The Ministry of Health and Family Welfare (MoHFW) launched the Swasth Bharat Portal during which event?`, options:["India Health Conclave 2026","National Digital Health Mission Summit","10th National Summit on Innovation and Inclusivity","National Health Governance Forum"], answer:2},
+
+{q:`The Swasth Bharat Portal launched by MoHFW is mainly intended to:`, options:["Replace Ayushman Bharat Digital Mission","Integrate fragmented health programme systems into a unified digital platform","Create a national medical entrance system","Digitise pharmaceutical exports"], answer:1},
+
+{q:`Canada’s Cape Breton University (CBU) signed MoUs with Indian institutions mainly to strengthen:`, options:["Defence research collaboration","Student mobility and academic partnerships","Semiconductor innovation","Space technology exchange"], answer:1},
+
+{q:`The five-year academic collaboration agreement signed by Cape Breton University (CBU) was with:`, options:["Ashoka University","Shiv Nadar University","BML Munjal University","O.P. Jindal Global University"], answer:2},
+
+{q:`Which Indian organisation partnered with Cape Breton University (CBU) to support engagement with governments and academic institutions in Gujarat?`, options:["Gujarat Knowledge Society","National Education Forum (NEF)","Gujarat Technological University","Education Development Council of India"], answer:1},
+
+{q:`The Department of Financial Services (DFS) approved Viability Plan 2.0 for Regional Rural Banks (RRBs) covering which period?`, options:["FY24 to FY27","FY25 to FY28","FY26 to FY30","FY27 to FY31"], answer:1},
+
+{q:`Viability Plan 2.0 for Regional Rural Banks (RRBs) is based on how many performance parameters?`, options:["20","25","30","35"], answer:2},
+
+{q:`Which among the following is NOT one of the four focus pillars of Viability Plan 2.0 for Regional Rural Banks (RRBs)?`, options:["Operational excellence","Asset quality","Profitability","Export competitiveness"], answer:3},
+
+{q:`India’s first green methanol production plant using Prosopis juliflora shrub as feedstock is being established at:`, options:["Paradip Port Authority","Deendayal Port Authority","Jawaharlal Nehru Port Authority","Visakhapatnam Port Authority"], answer:1},
+
+{q:`The green methanol plant being established in Kutch, Gujarat is expected to produce approximately how much methanol per day?`, options:["Two tonnes","Five tonnes","Eight tonnes","Ten tonnes"], answer:1},
+
+{q:`Securities and Exchange Board of India (SEBI) constituted the ‘Cyber-suraksha.ai’ task force primarily to:`, options:["Promote fintech startups","Monitor cryptocurrency trading","Evaluate AI-driven cybersecurity risks","Develop indigenous cloud infrastructure"], answer:2},
+
+{q:`Representatives from which of the following are included in SEBI’s ‘Cyber-suraksha.ai’ task force?`, options:["Only stock exchanges","Only public sector banks","Market Infrastructure Institutions (MIIs), QRTAs and Regulated Entities (REs)","Only mutual fund companies"], answer:2},
+
+{q:`Skyroot Aerospace became India’s first space-tech unicorn after raising approximately:`, options:["USD 25 million","USD 40 million","USD 60 million","USD 100 million"], answer:2},
+
+{q:`Following its latest funding round, Skyroot Aerospace achieved a valuation of approximately:`, options:["USD 550 million","USD 750 million","USD 1.1 billion","USD 1.8 billion"], answer:2},
+
+{q:`Skyroot Aerospace became the fourth startup to enter India’s unicorn club in 2026 after which of the following startups?`, options:["BharatPe, Pine Labs and CRED","KreditBee, Neysa and Juspay","PhonePe, Groww and Slice","Meesho, Razorpay and Unacademy"], answer:1},
+
+{q:`IIT Madras Global Research Foundation launched its first international centre in:`, options:["Boston, USA","New York, USA","Menlo Park, California","Austin, Texas"], answer:2},
+
+{q:`The first international centre launched by IIT Madras Global Research Foundation mainly aims to:`, options:["Promote defence exports","Expand India’s deep-tech innovation ecosystem globally","Develop global medical tourism","Train diplomats in emerging technologies"], answer:1},
+
+{q:`The investment announced for IIT Madras’ first international centre in the USA includes a greenfield investment of:`, options:["USD 2 million","USD 3 million","USD 4.5 million","USD 6 million"], answer:2},
+
+{q:`Indian Institute of Technology (IIT) Madras was established in which year?`, options:["1951","1956","1959","1964"], answer:2},
+
+{q:`Robert Edward Turner III, who passed away recently, is popularly known by which name?`, options:["Rupert Murdoch","Ted Turner","Larry King","Walter Cronkite"], answer:1},
+
+{q:`Robert Edward Turner III was the founder of which global media organisation?`, options:["BBC World","Fox News","Cable News Network (CNN)","MSNBC"], answer:2},
+
+{q:`African World Heritage Day (AWHD) is observed every year on:`, options:["April 18","May 1","May 5","June 5"], answer:2},
+
+{q:`The 11th African World Heritage Day observed in 2026 is led by UNESCO in partnership with:`, options:["African Development Bank","African Cultural Council","African World Heritage Fund (AWHF)","Pan-African Heritage Forum"], answer:2},
+
+{q:`World Asthma Day (WAD) 2026 carried which theme?`, options:["Asthma Care for Every Nation","Breathing Better Together","Access to anti-inflammatory inhalers for everyone with asthma, still an urgent need","Healthy Lungs, Healthy Lives"], answer:2},
+
+{q:`World Asthma Day is observed annually on:`, options:["First Monday of May","First Tuesday of May","Second Tuesday of May","May 5 every year"], answer:1},
+
+{q:`International No Diet Day (INDD), founded by British feminist Mary Evans Young, was first observed in:`, options:["1988","1990","1992","1995"], answer:2},
+
+{q:`The symbol associated with International No Diet Day (INDD) is:`, options:["Pink ribbon","Green ribbon","White ribbon","Light blue ribbon"], answer:3},
+
+{q:`The Bihar Cabinet approved a USD 500 million loan from the World Bank (WB) mainly for projects under which programme?`, options:["Bihar Smart Governance Mission","Bihar Urban Transformation Programme","Bihar Infrastructure Acceleration Programme","Bihar Integrated Civic Development Mission"], answer:1},
+];
+
+// ===============================
+// VARIABLES
+// ===============================
+
+let userAnswers = new Array(questions.length).fill(null);
+
+let markedForReview = new Array(questions.length).fill(false);
+
+let submitted = false;
+
+// ===============================
+// LOAD QUIZ
+// ===============================
+
+function loadQuiz(){
+
+    const quizDiv = document.getElementById("quiz");
+
+    questions.forEach((question,index)=>{
+
+        const qDiv = document.createElement("div");
+
+        qDiv.classList.add("question");
+
+        qDiv.id = `question_${index}`;
+
+        qDiv.innerHTML = `
+        <h3>Q${index+1}. ${question.q}</h3>
+        `;
+
+        question.options.forEach((option,optIndex)=>{
+
+            const opt = document.createElement("div");
+
+            opt.classList.add("option");
+
+            opt.innerText = option;
+
+            opt.onclick = ()=>selectOption(index,optIndex,opt);
+
+            opt.id = `q${index}_opt${optIndex}`;
+
+            qDiv.appendChild(opt);
+
+        });
+
+        // Mark Button
+
+        const markBtn = document.createElement("button");
+
+        markBtn.innerText = "Mark For Review";
+
+        markBtn.classList.add("mark-btn");
+
+        markBtn.onclick = ()=>toggleMark(index,markBtn);
+
+        qDiv.appendChild(markBtn);
+
+        // Clear Button
+
+        const clearBtn = document.createElement("button");
+
+        clearBtn.innerText = "Clear";
+
+        clearBtn.classList.add("clear-btn");
+
+        clearBtn.onclick = ()=>clearAnswer(index);
+
+        qDiv.appendChild(clearBtn);
+
+        quizDiv.appendChild(qDiv);
+
+    });
+
+}
+
+// ===============================
+// SELECT OPTION
+// ===============================
+
+function selectOption(qIndex,optIndex,element){
+
+    if(submitted) return;
+
+    userAnswers[qIndex] = optIndex;
+
+    const options = document.querySelectorAll(`[id^="q${qIndex}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+    element.classList.add("selected");
+
+}
+
+// ===============================
+// MARK FOR REVIEW
+// ===============================
+
+function toggleMark(index,button){
+
+    markedForReview[index] = !markedForReview[index];
+
+    const questionBox = document.getElementById(`question_${index}`);
+
+    if(markedForReview[index]){
+
+        button.classList.add("marked");
+
+        button.innerText = "Marked For Review";
+
+        questionBox.classList.add("review-marked");
+
+    }else{
+
+        button.classList.remove("marked");
+
+        button.innerText = "Mark For Review";
+
+        questionBox.classList.remove("review-marked");
+
+    }
+
+}
+
+// ===============================
+// CLEAR ANSWER
+// ===============================
+
+function clearAnswer(index){
+
+    if(submitted) return;
+
+    userAnswers[index] = null;
+
+    const options = document.querySelectorAll(`[id^="q${index}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+}
+
+// ===============================
+// SUBMIT QUIZ
+// ===============================
+
+function submitQuiz(){
+
+    if(submitted) return;
+
+    submitted = true;
+
+    clearInterval(timer);
+
+    let score = 0;
+
+    let correctCount = 0;
+    let wrongCount = 0;
+    let unansweredCount = 0;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        if(userAns === null){
+
+            unansweredCount++;
+
+        }
+        else if(userAns === question.answer){
+
+            score += 1;
+            correctCount++;
+
+        }
+        else{
+
+            score -= 0.25;
+            wrongCount++;
+
+        }
+
+    });
+
+    let attempted = correctCount + wrongCount;
+
+    let accuracy = attempted > 0
+    ? ((correctCount/attempted)*100).toFixed(2)
+    : 0;
+
+    document.body.innerHTML = `
+
+    <div class="container">
+
+        <div class="result-box">
+
+            <h1>Quiz Submitted ✅</h1>
+
+            <h2>Total Score: ${score.toFixed(2)}</h2>
+
+            <h3>Correct Answers: ${correctCount}</h3>
+
+            <h3>Wrong Answers: ${wrongCount}</h3>
+
+            <h3>Unanswered Questions: ${unansweredCount}</h3>
+
+            <h3>Accuracy: ${accuracy}%</h3>
+
+            <button class="review-btn" onclick="reviewAnswers()">
+            Review Answers
+            </button>
+
+            <div id="reviewSection"></div>
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+// ===============================
+// REVIEW ANSWERS
+// ===============================
+
+function reviewAnswers(){
+
+    const reviewSection = document.getElementById("reviewSection");
+
+    let html = `<h1 style="margin-top:40px;">Review Section</h1>`;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        let status = "";
+        let marks = "";
+
+        if(userAns === null){
+
+            status = `<span class="unanswered">Unanswered</span>`;
+            marks = `0 Marks`;
+
+        }
+        else if(userAns === question.answer){
+
+            status = `<span class="correct">Correct ✅</span>`;
+            marks = `+1 Mark`;
+
+        }
+        else{
+
+            status = `<span class="wrong">Wrong ❌</span>`;
+            marks = `-0.25 Mark`;
+
+        }
+
+        html += `
+
+        <div class="review-question">
+
+            <h3>Q${index+1}. ${question.q}</h3>
+
+            <p>${status}</p>
+
+            <p><b>Marks:</b> ${marks}</p>
+
+            <p>
+            <b>Your Answer:</b>
+            ${
+                userAns === null
+                ? "Not Attempted"
+                : question.options[userAns]
+            }
+            </p>
+
+            <div class="correct-answer">
+            <b>Correct Answer:</b>
+            ${question.options[question.answer]}
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+    reviewSection.innerHTML = html;
+
+}
+
+// ===============================
+// TIMER
+// ===============================
+
+let time = 900;
+
+const timer = setInterval(()=>{
+
+    let minutes = Math.floor(time/60);
+
+    let seconds = time%60;
+
+    document.getElementById("timer").innerText =
+    `Time Left: ${minutes}:${seconds<10 ? '0'+seconds : seconds}`;
+
+    time--;
+
+    if(time < 0){
+
+        clearInterval(timer);
+
+        alert("Time is up! Quiz auto-submitted.");
+
+        submitQuiz();
+
+    }
+
+},1000);
+
+// ===============================
+
+loadQuiz();
+
+</script>
+
+</body>
+</html>
